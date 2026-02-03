@@ -4,6 +4,8 @@ import { motion } from "framer-motion";
 
 import { Button } from "@/components/ui/button";
 
+import CreateWeddingFormDialog from "./create-wedding-form-dialog";
+
 export function HeroSectionOne() {
   return (
     <div className="relative mx-auto my-10 flex max-w-7xl flex-col items-center justify-center">
@@ -56,12 +58,10 @@ export function HeroSectionOne() {
           }}
           className="relative z-10 mt-8 flex flex-wrap items-center justify-center gap-4"
         >
-          <Button className="w-60 transform rounded-lg px-6 py-2 font-medium text-white transition-all duration-300 hover:-translate-y-0.5 ">
-            Saiba mais
-          </Button>
+          <CreateWeddingFormDialog />
           <Button
             variant="outline"
-            className="border-primary w-60 transform rounded-lg px-6 py-2 font-medium text-primary transition-all duration-300 hover:-translate-y-0.5"
+            className="border-primary text-primary w-60 transform rounded-lg px-6 py-2 font-medium transition-all duration-300 hover:-translate-y-0.5"
           >
             Teste Grátis
           </Button>
