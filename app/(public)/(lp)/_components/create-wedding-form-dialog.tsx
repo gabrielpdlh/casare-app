@@ -6,31 +6,21 @@ import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import {
   Dialog,
-  DialogClose,
   DialogContent,
   DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import {
-  Field,
-  FieldError,
-  FieldGroup,
-  FieldLabel,
-} from "@/components/ui/field";
+import { Field, FieldError, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 
 const createWeddingSchema = z.object({
   partnerOneName: z.string().min(2, "Informe seu nome"),
   partnerOneEmail: z.string().email("Email inválido"),
-
   partnerTwoName: z.string().min(2, "Informe o nome do parceiro(a)"),
   partnerTwoEmail: z.string().email("Email inválido"),
-
   weddingDate: z.date(),
-
   location: z.string().optional(),
 });
 
