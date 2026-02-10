@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 
 import { Button } from "@/components/ui/button";
 
-import CreateWeddingFormDialog from "./create-wedding-form-dialog";
+import AuthDialog from "./auth-dialog";
 
 export function HeroSectionOne() {
   return (
@@ -58,7 +58,7 @@ export function HeroSectionOne() {
           }}
           className="relative z-10 mt-8 flex flex-wrap items-center justify-center gap-4"
         >
-          <CreateWeddingFormDialog />
+          <AuthDialog />
           <Button
             variant="outline"
             className="border-primary text-primary w-60 transform rounded-lg px-6 py-2 font-medium transition-all duration-300 hover:-translate-y-0.5"
