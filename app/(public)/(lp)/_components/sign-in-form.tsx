@@ -6,12 +6,12 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
-import z, { set } from "zod";
+import z from "zod";
 
 import { Button } from "@/components/ui/button";
 import { Field, FieldError, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import { authClient } from "@/lib/auth-client";
+import { useSignIn } from "@/hooks/mutations/use-sign-in";
 
 const signInFormSchema = z.object({
   email: z.email("E-mail inválido"),
@@ -21,6 +21,7 @@ const signInFormSchema = z.object({
 type SignInFormValues = z.infer<typeof signInFormSchema>;
 
 const SignInForm = () => {
+  const signInMutation = useSignIn();
   const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
   const form = useForm<SignInFormValues>({
@@ -32,29 +33,29 @@ const SignInForm = () => {
   });
 
   const onSubmit = async (values: SignInFormValues) => {
-    await authClient.signIn.email({
-      email: values.email,
-      password: values.password,
-      fetchOptions: {
-        onSuccess: () => {
-          router.push("/");
-        },
-        onError: (error) => {
-          if (error.error.code === "USER_NOT_FOUND") {
-            return form.setError("email", {
-              message: "Usuário não encontrado",
-            });
-          }
-          if (error.error.code === "INVALID_EMAIL_OR_PASSWORD") {
-            form.setError("email", {
-              message: "E-mail ou senha inválidos.",
-            });
-            return form.setError("password", {
-              message: "E-mail ou senha inválidos.",
-            });
-          }
-          toast.error(error.error.message);
-        },
+    signInMutation.mutate(values, {
+      onSuccess: () => {
+        router.push("/");
+      },
+      onError: (error: any) => {
+        const code = error?.error?.code;
+
+        if (code === "USER_NOT_FOUND") {
+          return form.setError("email", {
+            message: "Usuário não encontrado",
+          });
+        }
+
+        if (code === "INVALID_EMAIL_OR_PASSWORD") {
+          form.setError("email", {
+            message: "E-mail ou senha inválidos.",
+          });
+          return form.setError("password", {
+            message: "E-mail ou senha inválidos.",
+          });
+        }
+
+        toast.error("Erro ao realizar login");
       },
     });
   };
@@ -104,7 +105,13 @@ const SignInForm = () => {
           </Field>
         )}
       />
-      <Button className="w-full" type="submit">Entrar</Button>
+      <Button
+        className="w-full"
+        type="submit"
+        disabled={signInMutation.isPending}
+      >
+        {signInMutation.isPending ? "Entrando..." : "Entrar"}
+      </Button>
     </form>
   );
 };
