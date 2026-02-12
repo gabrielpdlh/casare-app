@@ -37,6 +37,11 @@ export const partnerSlotEnum = pgEnum("partner_slot", [
   "PARTNER_TWO",
 ]);
 
+export const weddingRoleEnum = pgEnum("wedding_role", [
+  "GROOM",
+  "BRIDE"
+])
+
 /* -------------------------------------------------------------------------- */
 /*                                    USERS                                   */
 /* -------------------------------------------------------------------------- */
@@ -46,6 +51,9 @@ export const user = pgTable("user", {
   name: text("name").notNull(),
   email: text("email").notNull().unique(),
   emailVerified: boolean("email_verified").default(false).notNull(),
+  weddingRole: weddingRoleEnum("wedding_role"),
+  phone: text("phone"),
+  birthDate: date("wedding_date").notNull(),
   image: text("image"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at")
