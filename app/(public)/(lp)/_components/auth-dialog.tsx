@@ -12,6 +12,7 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 import SignInForm from "./sign-in-form";
+import SignUpForm from "./sign-up-form";
 
 const AuthDialog = () => {
   return (
@@ -19,7 +20,7 @@ const AuthDialog = () => {
       <DialogTrigger>
         <Button>Criar Casamento</Button>
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent className="">
         <DialogHeader>
           <DialogTitle>Crie seu Casamento</DialogTitle>
           <DialogDescription>
@@ -34,7 +35,9 @@ const AuthDialog = () => {
           <TabsContent value="sign-in">
             <SignInForm />
           </TabsContent>
-          <TabsContent value="sign-up">teste</TabsContent>
+          <TabsContent value="sign-up">
+            <SignUpForm />
+          </TabsContent>
         </Tabs>
       </DialogContent>
     </Dialog>
