@@ -84,6 +84,7 @@ const SignUpForm = () => {
       onSuccess: () => {
         router.push("/teste");
       },
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       onError: (error: any) => {
         const code = error?.error?.code;
 
@@ -102,7 +103,7 @@ const SignUpForm = () => {
           });
         }
 
-        toast.error("Erro ao realizar login");
+        toast.error("Erro ao criar conta");
       },
     });
   };

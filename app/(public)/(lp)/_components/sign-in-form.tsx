@@ -37,6 +37,7 @@ const SignInForm = () => {
       onSuccess: () => {
         router.push("/");
       },
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       onError: (error: any) => {
         const code = error?.error?.code;
 
