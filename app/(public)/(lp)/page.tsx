@@ -1,3 +1,5 @@
+import { useMaskInput } from "use-mask-input";
+
 import { HeroSectionOne } from "./_components/hero-section";
 
 export default function Home() {
