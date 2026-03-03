@@ -4,6 +4,7 @@ import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { db } from "@/db";
 
 export const auth = betterAuth({
+  baseURL: "http://localhost:3000",
   emailAndPassword: {
     enabled: true,
   },
@@ -12,20 +13,19 @@ export const auth = betterAuth({
       weddingRole: {
         type: ["GROOM", "BRIDE"],
         required: true,
-        input: true
+        input: true,
       },
       phone: {
         type: "string",
         required: true,
-        input: true
+        input: true,
       },
       birthDate: {
         type: "date",
         required: true,
-        input: true
+        input: true,
       },
-      
-    }
+    },
   },
   database: drizzleAdapter(db, {
     provider: "pg",
