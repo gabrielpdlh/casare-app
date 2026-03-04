@@ -35,7 +35,7 @@ const SignInForm = () => {
   const onSubmit = async (values: SignInFormValues) => {
     signInMutation.mutate(values, {
       onSuccess: () => {
-        router.push("/");
+        router.push("/app");
       },
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       onError: (error: any) => {
