@@ -1,6 +1,8 @@
+"use client";
+
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
-import * as z from "zod";
+import z from "zod";
 
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
@@ -14,34 +16,37 @@ import {
 } from "@/components/ui/dialog";
 import { Field, FieldError, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 
-const createWeddingSchema = z.object({
-  partnerOneName: z.string().min(2, "Informe seu nome"),
-  partnerOneEmail: z.string().email("Email inválido"),
-  partnerTwoName: z.string().min(2, "Informe o nome do parceiro(a)"),
-  partnerTwoEmail: z.string().email("Email inválido"),
-  weddingDate: z.date(),
-  location: z.string().optional(),
+const createWeddingFormSchema = z.object({
+  weddingDate: z
+    .date()
+    .min(new Date(), "A data do casamento deve ser no futuro"),
+  location: z.string().min(1, "Local é obrigatório"),
+  partnerTwoName: z.string().min(1, "Nome do parceiro é obrigatório"),
+  partnerTwoEmail: z.email("E-mail inválido"),
 });
 
-type CreateWeddingSchema = z.infer<typeof createWeddingSchema>;
+export type CreateWeddingFormValues = z.infer<typeof createWeddingFormSchema>;
 
 const CreateWeddingFormDialog = () => {
-  const form = useForm<CreateWeddingSchema>({
-    resolver: zodResolver(createWeddingSchema),
+  const form = useForm<CreateWeddingFormValues>({
+    resolver: zodResolver(createWeddingFormSchema),
     defaultValues: {
-      partnerOneName: "",
-      partnerOneEmail: "",
+      weddingDate: undefined,
+      location: "",
       partnerTwoName: "",
       partnerTwoEmail: "",
-      weddingDate: new Date(),
-      location: "",
     },
   });
 
-  function onSubmit(data: CreateWeddingSchema) {
-    console.log(data);
-  }
+  const onSubmit = async (values: CreateWeddingFormValues) => {
+    console.log(values);
+  };
 
   return (
     <Dialog>
@@ -56,70 +61,35 @@ const CreateWeddingFormDialog = () => {
           </DialogDescription>
         </DialogHeader>
         <form
-          className="flex max-h-[70vh] flex-col gap-y-4 overflow-y-auto pr-2"
           onSubmit={form.handleSubmit(onSubmit)}
+          className="flex max-h-[70vh] flex-col gap-y-4 overflow-y-auto pr-2"
         >
-          <Controller
-            name="partnerOneName"
-            control={form.control}
-            render={({ field, fieldState }) => (
-              <Field data-invalid={fieldState.invalid}>
-                <FieldLabel>Seu Nome Completo</FieldLabel>
-                <Input
-                  {...field}
-                  aria-invalid={fieldState.invalid}
-                  placeholder="Digite o seu nome completo"
-                />
-                {fieldState.invalid && (
-                  <FieldError errors={[fieldState.error]} />
-                )}
-              </Field>
-            )}
-          />
-          <Controller
-            name="partnerOneEmail"
-            control={form.control}
-            render={({ field, fieldState }) => (
-              <Field data-invalid={fieldState.invalid}>
-                <FieldLabel>Seu E-mail</FieldLabel>
-                <Input
-                  {...field}
-                  aria-invalid={fieldState.invalid}
-                  placeholder="Digite o seu e-mail"
-                />
-                {fieldState.invalid && (
-                  <FieldError errors={[fieldState.error]} />
-                )}
-              </Field>
-            )}
-          />
           <Controller
             name="partnerTwoName"
             control={form.control}
             render={({ field, fieldState }) => (
               <Field data-invalid={fieldState.invalid}>
-                <FieldLabel>Nome Completo do seu parceiro(a)</FieldLabel>
+                <FieldLabel>Nome do Parceiro</FieldLabel>
                 <Input
                   {...field}
                   aria-invalid={fieldState.invalid}
-                  placeholder="Digite o nome completo do seu parceiro(a)"
+                  placeholder="Digite o nome do seu parceiro"
                 />
                 {fieldState.invalid && (
                   <FieldError errors={[fieldState.error]} />
                 )}
               </Field>
             )}
-          />
-          <Controller
+          /><Controller
             name="partnerTwoEmail"
             control={form.control}
             render={({ field, fieldState }) => (
               <Field data-invalid={fieldState.invalid}>
-                <FieldLabel>E-mail do seu parceiro(a)</FieldLabel>
+                <FieldLabel>E-mail do Parceiro</FieldLabel>
                 <Input
                   {...field}
                   aria-invalid={fieldState.invalid}
-                  placeholder="Digite o e-mail do seu parceiro(a)"
+                  placeholder="Digite o e-mail do seu parceiro"
                 />
                 {fieldState.invalid && (
                   <FieldError errors={[fieldState.error]} />
@@ -130,17 +100,40 @@ const CreateWeddingFormDialog = () => {
           <Controller
             name="weddingDate"
             control={form.control}
-            render={({ field }) => (
+            render={({ field, fieldState }) => (
               <Field>
                 <FieldLabel>Data do Casamento</FieldLabel>
-                <Calendar
-                  className="mx-auto"
-                  mode="single"
-                  selected={field.value}
-                  captionLayout="dropdown"
-                  onSelect={field.onChange}
-                  initialFocus
-                />
+
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      className="justify-start font-normal"
+                    >
+                      {field.value
+                        ? field.value.toLocaleDateString()
+                        : "Selecione a data"}
+                    </Button>
+                  </PopoverTrigger>
+
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar
+                      mode="single"
+                      selected={field.value}
+                      captionLayout="dropdown"
+                      startMonth={new Date()}
+                      endMonth={new Date(2027, 11)}
+                      onSelect={(date) => {
+                        if (date) field.onChange(date);
+                      }}
+                    />
+                  </PopoverContent>
+                </Popover>
+
+                {fieldState.invalid && (
+                  <FieldError errors={[fieldState.error]} />
+                )}
               </Field>
             )}
           />
@@ -153,7 +146,7 @@ const CreateWeddingFormDialog = () => {
                 <Input
                   {...field}
                   aria-invalid={fieldState.invalid}
-                  placeholder="Digite o local do casamento"
+                  placeholder="Digite o local do seu casamento"
                 />
                 {fieldState.invalid && (
                   <FieldError errors={[fieldState.error]} />
@@ -161,7 +154,6 @@ const CreateWeddingFormDialog = () => {
               </Field>
             )}
           />
-
           <Button type="submit">Criar Casamento</Button>
         </form>
       </DialogContent>
